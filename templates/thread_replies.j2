@@ -6,7 +6,7 @@
             {% if reply.deleted %}
                 <p>>>This message has been deleted</p>
             {% else %}
-                <h6>#{{ reply.id }} {{ reply.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}{% if reply.modified %}, edited {{ reply.modified.strftime('%Y-%m-%d %H:%M') }}{% endif %} by {{ reply.user.displayname }}</h6>
+                <h6>#{{ reply.id }} {{ reply.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}{% if reply.modified %}, edited {{ reply.modified.strftime('%Y-%m-%d %H:%M') }}{% endif %} by {{ reply.user.display_name }}</h6>
                 {% if reply.parent_id %}
                     <br>
                     <h5><a href="{{ request.path }}#r{{ reply.parent_id }}">>{{ reply.parent_id }}</a></h5>
