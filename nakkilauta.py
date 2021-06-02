@@ -355,8 +355,9 @@ def delete_user(id):
 @superuser_required
 def create_board(board_name = None):
     board = Board()
+    users = []
     for user in User.query.filter(User.active).all():
-         users = [(user.id, user.username)]
+         users.append((user.id, user.username))
     if board_name:
         board = Board.query.filter(Board.name == board_name).first()
         #board = db.session.query(Board).filter(Board.name == board_name).one_or_none()

@@ -13,7 +13,7 @@
         {% if thread.replies %}
         <h6>Replies:&nbsp;
             {% for reply in thread.replies %}
-            <a href="/#{{ reply.id }}">>>{{ reply.id }}</a>&nbsp;
+            <a href="/{{ thread.board.name }}/{{ thread.id }}#r{{ reply.id }}">>>{{ reply.id }}</a>&nbsp;
             {% endfor %}
         </h6>
         {% endif %}

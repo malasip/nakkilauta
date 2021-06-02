@@ -12,6 +12,13 @@
         <h3><a href="{{ request.path }}/{{ thread.id }}">{{ thread.title }}</a></h3>
         <h6>#{{ thread.id }} {{ thread.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}{% if thread.modified %}, edited {{ thread.modified.strftime('%Y-%m-%d %H:%M') }}{% endif %} by {{ thread.user.display_name }}</h6>
         <p>{{ thread.message | replace('\n', '<br>') | safe }}</p>
+        {% if thread.replies %}
+        <h6>Replies:&nbsp;
+            {% for reply in thread.replies %}
+            <a href="/{{ thread.board.name }}/{{ thread.id }}#r{{ reply.id }}">>>{{ reply.id }}</a>&nbsp;
+            {% endfor %}
+        </h6>
+        {% endif %}
         <p style="margin-top: 2px; margin-bottom: 4px;">
             {% if current_user.get_id() == thread.user_id or current_user in thread.board.moderators or current_user.superuser %}
                 <a href="{{ request.path }}/{{ thread.id }}/delete?next={{ request.path }}" style = "color: red;">Delete</a>&nbsp;&nbsp;&nbsp;&nbsp;
