@@ -9,7 +9,7 @@
     <div id="{{ thread.id }}">
         <h3><a href="/{{ thread.board.name }}/{{ thread.id }}">{{ thread.title }}</a></h3>
         <h6>#{{ thread.id }} {{ thread.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}{% if thread.modified %}, edited {{ thread.modified.strftime('%Y-%m-%d %H:%M') }}{% endif %} by {{ thread.user.display_name }}</h6>
-        <p>{{ thread.message }}</p>
+        <p>{{ thread.message | replace('\n', '<br>') | safe }}</p>
         {% if thread.replies %}
         <h6>Replies:&nbsp;
             {% for reply in thread.replies %}

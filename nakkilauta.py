@@ -25,7 +25,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from urllib.parse import urlparse, urljoin
 from sqlalchemy import exc
 from flask_wtf.csrf import CSRFProtect
-from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField ## AVOID!!!!
 
 
 app = Flask(__name__)
