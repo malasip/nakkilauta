@@ -34,20 +34,23 @@ class User(db.Model):
     threads = db.relationship('Thread', backref = db.backref('user', remote_side = [id]))
     replies = db.relationship('Reply', backref = db.backref('user', remote_side = [id]))
 
+    @property
     def is_active(self):
         return self.active
 
+    @property
     def is_authenticated(self):
         return True
-    
+    @property
     def is_anonymous(self):
         return False
 
-    def get_id(self):
-        return self.id
-
+    @property
     def is_superuser(self):
         return self.superuser
+
+    def get_id(self):
+        return self.id
 
     def setPassword(self, password):
         self.pwhash = generate_password_hash(password)
@@ -89,7 +92,7 @@ moderators = db.Table('moderators', db.metadata,
 def superuser_required(func):
     @wraps(func)
     def verify(*args, **kwargs):
-        if not current_user.superuser:
+        if not current_user.is_superuser:
             return unauthorized('You need to be a superuser to access this page')
         return func(*args, **kwargs)
     return verify
@@ -402,7 +405,7 @@ def index():
     if current_user.is_anonymous == True:
         boards = Board.query.filter(Board.deleted == None).order_by(Board.name.asc()).all()
         #boards = db.session.query(Board).filter(Board.deleted == None).order_by(Board.name.asc()).all()
-    elif current_user.superuser:
+    elif current_user.is_superuser:
         boards = Board.query.order_by(Board.name.asc()).all()
         #boards = db.session.query(Board).order_by(Board.name.asc()).all()
     else:
@@ -504,14 +507,14 @@ def create_thread(board_name, thread_id = None, reply_id = None):
 def edit_thread(board_name, thread_id, reply_id = None):
     if not reply_id:
         thread = Thread.query.get_or_404(thread_id)
-        if current_user.get_id() != thread.user_id and current_user not in thread.board.moderators and not current_user.superuser:
+        if current_user.get_id() != thread.user_id and current_user not in thread.board.moderators and not current_user.is_superuser:
             abort(403)
         form = ThreadForm(obj = thread)
     elif not thread_id:
         abort(404)
     else:
         reply = Reply.query.get_or_404(reply_id)
-        if current_user.get_id() != reply.user_id and current_user not in reply.thread.board.moderators and not current_user.superuser:
+        if current_user.get_id() != reply.user_id and current_user not in reply.thread.board.moderators and not current_user.is_superuser:
             abort(403)
         form = ReplyForm(obj = reply)
     if form.validate_on_submit():
@@ -544,14 +547,14 @@ def edit_thread(board_name, thread_id, reply_id = None):
 def delete_thread(board_name, thread_id, reply_id = None):
     if not reply_id:
         thread = Thread.query.get_or_404(thread_id)
-        if current_user.get_id() != thread.user_id and current_user not in thread.board.moderators and not current_user.superuser:
+        if current_user.get_id() != thread.user_id and current_user not in thread.board.moderators and not current_user.is_superuser:
             abort(403)
         thread.deleted = datetime.utcnow()
     elif not thread_id:
         abort(404)
     else:
         reply = Reply.query.get_or_404(reply_id)
-        if current_user.get_id() != reply.user_id and current_user not in reply.thread.board.moderators and not current_user.superuser:
+        if current_user.get_id() != reply.user_id and current_user not in reply.thread.board.moderators and not current_user.is_superuser:
             abort(403)
         reply.deleted = datetime.utcnow()
     db.session.commit()
